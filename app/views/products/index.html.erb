@@ -1,1 +1,21 @@
+<h1>Products</h1>
+<ul>
+<% @products.each do |p| %>
+  <%= render partial: 'product', locals: {p: p} %>
+<% end %>
+</ul>
 
+<script type="text/javascript" charset="utf-8">
+  $(function(){
+    $('.js-info').on('click',function() {
+      var id = $(this).data('id')//this.dataset.id
+      $.get("/products/" + id + "/description", function(description){
+        $.get("/products/" + id + "/inventory", function(inventory){
+          inventory = inventory === 'true' ? 'Available' : "Sold Out"
+          var fullDescription = `<p> ${description} </p> <p><strong>${inventory}</strong></p>`
+          $('#description-'+id).html(fullDescription)
+        })
+      })
+    })
+  });
+</script>
