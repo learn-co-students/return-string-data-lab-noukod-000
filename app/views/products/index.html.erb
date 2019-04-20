@@ -1,1 +1,31 @@
+<% @products.each do |product| %>
+  <%= render partial: "product", locals: {product: product} %>
+<% end %>
 
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function () {
+    $(document.body).on('click', '.js-more', function() {
+      let id = $(this).data("id");
+      $(this).replaceWith('<button class="js-less" data-id="'+id+'">Less...</button>');
+      $.get("/products/" + id + "/description", function(data1) {
+        $.get("/products/" + id + "/inventory", function(data2) {
+          // Replace text of body-id div
+          // console.log(data2);
+          const state = data2 === 'true' ? "Available" : "Sold Out";
+          $("#body-" + id).text(data1 + " " + state);
+        });
+      });
+    });
+
+      $(document.body).on('click', '.js-less', function() {
+        let id = $(this).data("id");
+        console.log(id);
+        $(this).replaceWith('<button class="js-more" data-id="'+id+'">More...</button>');
+        $.get("/products/" + id + "/description", function(data) {
+          // rsp = < %= escape_javascript(truncate(data)) % >;
+          // Replace text of body-id div
+          $("#body-" + id).text(data.substring(0, 27)+"...");
+        });
+      });
+  });
+</script>
